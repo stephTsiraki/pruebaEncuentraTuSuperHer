@@ -9,13 +9,15 @@ $(document).ready(function () {
 
     /*Validar que usuario ingrese sólo números. Intenté hacerlo con RegExp pero fallé, 
     por lo que lo haré con estructuras condicionales*/
-    if(isNaN(valueInput)||(valueInput)>731||(valueInput)<1){
-      alert("Por favor ingrese un número válido: \n Entre 1 y 731 inclusive. \n Muchas gracias")
-      
-      //Refrescar la página 
+    if (isNaN(valueInput) || valueInput > 731 || valueInput < 1) {
+      alert(
+        "Por favor ingrese un número válido: \n Entre 1 y 731 inclusive. \n Muchas gracias"
+      );
+
+      //Refrescar la página
       location.reload();
-    }else{
-      alert("El número ingresado es válido.")
+    } else {
+      alert("El número ingresado es válido.");
     }
 
     //Realizar petición por método AJAX de jQuery
@@ -68,34 +70,26 @@ $(document).ready(function () {
         `);
         //Renderizar gráfica interactiva mediante Canvas JS usando jQuery
 
-        //declaro  arreglo estadisticas para adecuar mis datos a lo solicitado
+        //Declaro  arreglo estadisticas para adecuar mis datos a lo solicitado por CanvasJS, datapoints.
         let estadisticas = [];
-        console.log(Object.entries(data.powerstats)[2]);
-        //Propiedades
-        Object.entries(Object.entries(data.powerstats)).forEach(([key, value]) => {
+        let obj = Object.entries(data.powerstats);
+        Object.entries(obj).forEach(([key, value]) => {
           estadisticas.push({
-            name: key,
-            y: value
-
-          })
-          console.log([key, value]);
+            name: value[0],
+            y: value[1],
+          });
+          console.log("{" + value[0] + ":" + value[1] + "},");
         });
+        console.log(estadisticas);
 
-
-
-        
-        
         /*declarar un objeto de configuracion con la propiedad animationEnabled para generar la pequeña animacion cuando
-          se renderiza la animacion por primera vez, aunque lo más importante es preparar endpoints con powerstats del json.*/
+          se renderiza la animacion por primera vez, aunque lo más importante es preparar endpoints con powerstats del json.
+        */
 
         let config = {
           animationEnabled: true,
           title: {
             text: `Estadísticas de poder para ${nombre}`,
-          },
-          legend: {
-            cursor: "pointer",
-            itemclick: explodePie,
           },
           data: [
             {
@@ -107,18 +101,20 @@ $(document).ready(function () {
             },
           ],
         };
+        let chart = new CanvasJS.Chart("chartContainer", config);
+        chart.render();
       },
       //Aquí ingresamos la función para alertar en caso de que ocurra un error con la petición
-      error: function(error) {
-        if(error){
-          alert("Por favor Intente nuevamente con otro ID o Número.  =( \n Ha ocurrido un error " +error)
-        }else{
-          console.log("No hay error!")
+      error: function (error) {
+        if (error) {
+          alert(
+            "Por favor Intente nuevamente con otro ID o Número.  =( \n Ha ocurrido un error " +
+              error
+          );
+        } else {
+          console.log("No hay error!");
         }
-        }
-                   
-      
+      },
     });
   });
 });
-
